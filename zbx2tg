@@ -1,0 +1,15 @@
+#!/bin/bash
+. $(dirname "$0")/zbx2tg.cfg
+
+CURL_TG="${CURL} https://api.telegram.org/bot${TG_KEY}"
+
+TMP_DIR="/tmp/zbx2tg"
+[ ! -d "${TMP_DIR}" ] && (mkdir -p ${TMP_DIR} || TMP_DIR="/tmp")
+TMP_ID="${TMP_DIR}/chat-id.txt"
+
+TS="`date +%s_%N`_$RANDOM"
+
+RESPONCE=$(${CURL_TG}/getUpdates)
+
+echo $RESPONCE | jq " .result[]|.message.chat| .id, .type, .username, .title "
+
